@@ -1,7 +1,7 @@
 /venv
 /.idea
-/RMB_data/*
+RMB_data/*
 /rmb_split/
-/rmb_test_data/*
+rmb_test_data/*
 /model/__*
 /tools/__*
