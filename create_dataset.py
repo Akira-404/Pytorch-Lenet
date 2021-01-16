@@ -10,7 +10,7 @@ import sys
 
 def makedir(new_dir):
     if not os.path.exists(new_dir):
-        print("create new dir:", new_dir)
+        print("创建新文件:", new_dir)
         os.mkdir(new_dir)
 
 
@@ -62,14 +62,11 @@ def split_dataset():
             img_count = len(imgs)
             print("图片数量:", img_count)
 
-            # 计算训练集索引的结束位置:0-80
             train_point = int(img_count * train_pct)
-            print("train point:", train_point)
-
-            # 计算验证集索引的结束位置:80-90
+            print("训练集有{}张".format(train_point))
             valid_point = int(img_count * (train_pct + valid_pct))
-            print("valid point:", valid_point)
-            print("test point:", img_count * test_pct)
+            print("验证集有{}张".format(valid_point))
+            print("测试集有{}张".format(int(img_count * test_pct)))
 
             # 把数据划分到训练集、验证集、测试集的文件夹
             for i in range(img_count):
