@@ -3,43 +3,44 @@ import random
 import shutil
 import sys
 
+'''
+随机分割数据
+'''
+
 
 def makedir(new_dir):
     if not os.path.exists(new_dir):
-        print("make new dir:", new_dir)
+        print("create new dir:", new_dir)
         os.mkdir(new_dir)
 
 
-if __name__ == "__main__":
+def split_dataset():
 
     # 获取项目根目录
-    ABSPATH = os.path.abspath(sys.argv[0])
+    ABSPATH = os.path.abspath(sys.argv[-1])
     ABSPATH = os.path.dirname(ABSPATH)
-    print(ABSPATH)
+    print("当前项目根目录:{}".format(ABSPATH))
 
-    random.seed(1)
-
-    # 总数据集
+    # 总数据集:必须要有
     dataset_dir = os.path.join(ABSPATH, "RMB_data")
 
     # 分割数据集
     split_dir = os.path.join(ABSPATH, "rmb_split")
-    if not os.path.exists(split_dir):
-        makedir(split_dir)
+
+    # 清理数据
+    if os.path.exists(split_dir):
+        print("删除原有文件")
+        shutil.rmtree(split_dir, True)
+
+    random.seed(1)
 
     train_dir = os.path.join(split_dir, "train")
     valid_dir = os.path.join(split_dir, "valid")
     test_dir = os.path.join(split_dir, "test")
 
-    dirlist = [train_dir, valid_dir, test_dir]
-    for i in range(3):
+    dirlist = [split_dir, train_dir, valid_dir, test_dir]
+    for i in range(len(dirlist)):
         makedir(dirlist[i])
-
-    print("dataset dir path:{}".format(dataset_dir))
-    print("split dir path:j{}".format(split_dir))
-    print("train dir path:{}".format(train_dir))
-    print("valid dir path:{}".format(valid_dir))
-    print("test dir path:{}".format(test_dir))
 
     # 图片占比
     train_pct = 0.8
@@ -61,18 +62,17 @@ if __name__ == "__main__":
             img_count = len(imgs)
             print("图片数量:", img_count)
 
-            # 计算训练集索引的结束位置:1-80
+            # 计算训练集索引的结束位置:0-80
             train_point = int(img_count * train_pct)
             print("train point:", train_point)
 
-            # 计算验证集索引的结束位置:81-90
+            # 计算验证集索引的结束位置:80-90
             valid_point = int(img_count * (train_pct + valid_pct))
             print("valid point:", valid_point)
-            print("test point:", img_count - valid_point - train_point)
+            print("test point:", img_count * test_pct)
 
             # 把数据划分到训练集、验证集、测试集的文件夹
             for i in range(img_count):
-                print(i)
                 if i < train_point:
                     out_dir = os.path.join(train_dir, sub_dir)
 
@@ -94,3 +94,7 @@ if __name__ == "__main__":
                     train_point,
                     img_count -
                     valid_point))
+
+
+if __name__ == "__main__":
+    split_dataset()

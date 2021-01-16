@@ -1,7 +1,13 @@
 import os
 import cv2
+from PIL import Image
+import numpy as np
 import random
 from torch.utils.data import Dataset
+
+'''
+映射数据标签
+'''
 
 random.seed(1)
 rmb_label = {"1": 0, "100": 1}
@@ -16,10 +22,7 @@ class RMBDataset(Dataset):
 
     def __getitem__(self, index):
         path_img, label = self.data_info[index]
-
-        b, g, r = cv2.split(path_img)  # 拆分通道
-        img = cv2.merge([r, g, b])  # 合并通道
-
+        img = Image.open(path_img).convert('RGB')  # 0~255
         if self.transform is not None:
             img = self.transform(img)
         return img, label
