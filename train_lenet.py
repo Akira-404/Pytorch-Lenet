@@ -49,11 +49,12 @@ norm_std = [0.229, 0.224, 0.225]
 
 # 数据增强和转化
 train_transform = transforms.Compose([
-    transforms.Resize((32, 32)),
-    transforms.RandomCrop(32, padding=4),
-    transforms.ToTensor(),
-    transforms.Normalize(norm_mean, norm_std),
+    transforms.Resize((32, 32)),  # 缩放为32x32
+    transforms.RandomCrop(32, padding=4),  # 图片随机剪裁
+    transforms.ToTensor(),  # 将PILImage转变为torch.FloatTensor的数据形式
+    transforms.Normalize(norm_mean, norm_std),  # 用给定的均值和标准差分别对每个通道的数据进行正则化
 ])
+
 # 设置验证集的数据增强和转化，不需要 RandomCrop
 valid_transform = transforms.Compose([
     transforms.Resize((32, 32)),
@@ -61,6 +62,7 @@ valid_transform = transforms.Compose([
     transforms.Normalize(norm_mean, norm_std),
 ])
 
+# 构建数据集
 train_data = RMBDataset(data_dir=train_dir, transform=train_transform)
 valid_data = RMBDataset(data_dir=valid_dir, transform=valid_transform)
 
@@ -71,7 +73,7 @@ train_loader = DataLoader(
     shuffle=True)
 valid_loader = DataLoader(dataset=valid_data, batch_size=batch_size)
 
-
+#二分类
 net = LeNetSequetial(classes=2)
 net.initialize_weights()
 
@@ -167,7 +169,7 @@ for epoch in range(max_epoch):
                     correct_val /
                     total_val))
 
-#打印图像信息
+# 打印图像信息
 train_x = range(len(train_curve))
 train_y = train_curve
 
