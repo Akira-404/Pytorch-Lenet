@@ -7,6 +7,7 @@ from collections import OrderedDict
 lenet 的三种实现方式
 '''
 
+
 class LeNet(nn.Module):
     def __init__(self, classes):
         super(LeNet, self).__init__()
@@ -58,11 +59,14 @@ class LeNet(nn.Module):
                 nn.init.normal_(m.weight.data, 0, 0.1)
                 m.bias.data.zero_()
 
+# 序列方式传入网络模块
+
 
 class LeNetSequetial(nn.Module):
     def __init__(self, classes):
         super(LeNetSequetial, self).__init__()
 
+        # 卷积层
         self.features = nn.Sequential(
             nn.Conv2d(3, 6, 5),
             nn.ReLU(),
@@ -72,6 +76,7 @@ class LeNetSequetial(nn.Module):
             nn.MaxPool2d(2, 2)
         )
 
+        # 全连接层
         self.classifier = nn.Sequential(
             nn.Linear(16 * 5 * 5, 120),
             nn.ReLU(),
@@ -80,12 +85,14 @@ class LeNetSequetial(nn.Module):
             nn.Linear(84, classes)
         )
 
+    # 前向传播
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size()[0], -1)
         x = self.classifier(x)
         return x
 
+    # 初始化权重
     def initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
@@ -104,6 +111,7 @@ class LeNetSequentialOrderDict(nn.Module):
     def __init__(self, classes):
         super(LeNetSequentialOrderDict, self).__init__()
 
+        #卷积层
         self.features = nn.Sequential(OrderedDict({
             'conv1': nn.Conv2d(3, 6, 5),
             'relu1': nn.ReLU(inplace=True),
@@ -114,6 +122,7 @@ class LeNetSequentialOrderDict(nn.Module):
             'pool2': nn.MaxPool2d(kernel_size=2, stride=2),
         }))
 
+        # 全连接层
         self.classifier = nn.Sequential(OrderedDict({
             'fc1': nn.Linear(16 * 5 * 5, 120),
             'relu3': nn.ReLU(),
@@ -124,12 +133,14 @@ class LeNetSequentialOrderDict(nn.Module):
             'fc3': nn.Linear(84, classes),
         }))
 
+    #前向传播
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size()[0], -1)
         x = self.classifier(x)
         return x
 
+    #初始化权重
     def initialize_weights(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
